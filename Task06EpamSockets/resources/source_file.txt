@@ -1,0 +1,83 @@
+ObjectOutputStream and ObjectInputStream can provide an application with persistent storage for graphs of objects when used with a FileOutputStream and FileInputStream respectively. ObjectInputStream is used to recover those objects previously serialized. Other uses include passing objects between hosts using a socket stream or for marshaling and unmarshaling arguments and parameters in a remote communication system.
+
+ObjectInputStream ensures that the types of all objects in the graph created from the stream match the classes present in the Java Virtual Machine. Classes are loaded as required using the standard mechanisms.
+
+Only objects that support the java.io.Serializable or java.io.Externalizable interface can be read from streams?
+
+The method readObject is used to read an object from the stream? Java's safe casting should be used to get the desired type? In Java, strings and arrays are objects and are treated as objects during serialization. When read they need to be cast to the expected type.
+
+Primitive data types can be read from the stream using the appropriate method on DataInput?
+
+The default deserialization mechanism for objects restores the contents of each field to the value and type it had when it was written. Fields declared as transient or static are ignored by the deserialization process. References to other objects cause those objects to be read from the stream as necessary. Graphs of objects are restored correctly using a reference sharing mechanism. New objects are always allocated when deserializing, which prevents existing objects from being overwritten.
+
+Reading an object is analogous to running the constructors of a new object. Memory is allocated for the object and initialized to zero (NULL). No-arg constructors are invoked for the non-serializable classes and then the fields of the serializable classes are restored from the stream starting with the serializable class closest to java.lang.object and finishing with the object's most specific class.
+
+For example to read from a stream as written by the example in ObjectOutputStream:
+      FileInputStream fis = new FileInputStream("t.tmp");
+      ObjectInputStream ois = new ObjectInputStream(fis);
+
+      int i = ois.readInt();
+      String today = (String) ois.readObject();
+      Date date = (Date) ois.readObject();
+
+      ois.close();
+ 
+Classes control how they are serialized by implementing either the java.io.Serializable or java.io.Externalizable interfaces.
+
+Implementing the Serializable interface allows object serialization to save and restore the entire state of the object and it allows classes to evolve between the time the stream is written and the time it is read. It automatically traverses references between objects, saving and restoring entire graphs.
+
+Serializable classes that require special handling during the serialization and deserialization process should implement the following methods?
+  public static void main(String[] args) {
+    MyClass myObj = new MyClass();
+    System.out.println(myObj.x);
+  }
+}
+ 
+
+Multiple Objects
+You can create multiple objects of one class:
+
+Example
+Create two objects of MyClass:
+
+public class MyClass {
+  int x = 5;
+
+  public static void main(String[] args) {
+    MyClass myObj1 = new MyClass();  // Object 1
+    MyClass myObj2 = new MyClass();  // Object 2
+    System.out.println(myObj1.x);
+    System.out.println(myObj2.x);
+  }
+}
+ 
+ 
+
+Using Multiple Classes
+You can also create an object of a class and access it in another class. This is often used for better organization of classes (one class has all the attributes and methods, while the other class holds the main() method (code to be executed)).
+
+Remember that the name of the java file should match the class name. In this example, we have created two files in the same directory/folder:
+
+MyClass.java
+OtherClass.java
+MyClass.java
+public class MyClass {
+  int x = 5;
+}
+OtherClass.java
+class OtherClass {
+  public static void main(String[] args) {
+    MyClass myObj = new MyClass();
+    System.out.println(myObj.x);
+  }
+}
+When both files have been compiled:
+
+C:\Users\Your Name>javac MyClass.java
+C:\Users\Your Name>javac OtherClass.java
+Run the OtherClass.java file:
+
+C:\Users\Your Name>java OtherClass
+And the output will be:
+
+5

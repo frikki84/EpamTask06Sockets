@@ -8,7 +8,7 @@ import by.epamtc.jwdmay2020.dziadkouskaya.task06.client.controller.ClientControl
 
 public class ClientMain {
 	public static void main(String[] args) {
-		String sourcePath = "resorces\\source_file.txt";
+		String sourcePath = "resources\\source_file.txt";
 		int portNumber = 4004;
 
 		UserRequest request = new UserRequest(sourcePath,
